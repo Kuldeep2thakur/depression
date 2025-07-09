@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Mental Health Assessment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Unified Navigation Styles */
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section h2 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .mission-card, .vision-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mission-card h3, .vision-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .mission-card p, .vision-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .team-section {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .team-member h4 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .values-section {
+            margin: 3rem 0;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .value-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .value-item:hover {
+            transform: scale(1.05);
+        }
+
+        .value-item i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .content-section {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="home.html" class="nav-logo">
+            <i class="fas fa-brain"></i> Mental Health Assessment
+        </a>
+        <div class="nav-links">
+            <li class="item"><a href="/"> home</a></li>
+            <li class="item"><a href="/quiz">quiz</a></li>
+            <li class="item"><a href="/about"> about</a></li>
+            <li class="item"><a href="/services"> services</a></li>
+            <li class="item"><a href="/contactus"> contactus</a></li>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1><i class="fas fa-users"></i> About Us</h1>
+            <p>Dedicated to providing accessible mental health assessment and support to everyone who needs it.</p>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-heart"></i> Our Mission & Vision</h2>
+            
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+                    <p>To provide accessible, accurate, and compassionate mental health assessments that help individuals understand their mental well-being and guide them toward appropriate support and resources.</p>
+                </div>
+                
+                <div class="vision-card">
+                    <h3><i class="fas fa-eye"></i> Our Vision</h3>
+                    <p>A world where mental health awareness is universal, stigma is eliminated, and everyone has access to the tools and support they need for optimal mental well-being.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-star"></i> Our Values</h2>
+            
+            <div class="values-grid">
+                <div class="value-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Privacy</h4>
+                    <p>Your data is secure and confidential</p>
+                </div>
+                <div class="value-item">
+                    <i class="fas fa-handshake"></i>
+                    <h4>Compassion</h4>
+                    <p>We care about your mental well-being</p>
+                </div>
+                <div class="value-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <h4>Innovation</h4>
+                    <p>Using technology for better mental health</p>
+                </div>
+                <div class="value-item">
+                    <i class="fas fa-users"></i>
+                    <h4>Accessibility</h4>
+                    <p>Available to everyone, anywhere</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="team-section">
+                <h2><i class="fas fa-user-friends"></i> Our Team</h2>
+                <p style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 2rem;">Meet the dedicated professionals behind our mental health assessment platform.</p>
+                
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                            <i class="fas fa-user-md" style="font-size: 2rem; color: white;"></i>
+                        </div>
+                        <h4>Dr. Sarah Johnson</h4>
+                        <p>Clinical Psychologist</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                            <i class="fas fa-laptop-code" style="font-size: 2rem; color: white;"></i>
+                        </div>
+                        <h4>Michael Chen</h4>
+                        <p>Technology Lead</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                            <i class="fas fa-heart" style="font-size: 2rem; color: white;"></i>
+                        </div>
+                        <h4>Dr. Emily Rodriguez</h4>
+                        <p>Mental Health Counselor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

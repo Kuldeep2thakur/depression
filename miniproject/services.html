@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Mental Health Assessment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Unified Navigation Styles */
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .services-header h1 {
+            color: #2c3e50;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .services-header p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .service-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features li {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #555;
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .service-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        footer:hover {
+            background: rgba(0, 0, 0, 0.95);
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href="home.html" class="nav-logo">
+            <i class="fas fa-brain"></i> Mental Health Assessment
+        </a>
+        <div class="nav-links">
+            <li class="item"><a href="/"> home</a></li>
+            <li class="item"><a href="/quiz">quiz</a></li>
+            <li class="item"><a href="/about"> about</a></li>
+            <li class="item"><a href="/services"> services</a></li>
+            <li class="item"><a href="/contactus"> contactus</a></li>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="services-header">
+            <h1>Our Services</h1>
+            <p>Comprehensive mental health support and assessment tools designed for your well-being</p>
+        </div>
+
+        <section>
+            <h2>What We Offer</h2>
+            <p>We provide a range of mental health services designed to support your journey to better mental well-being. Our evidence-based approach ensures you receive reliable, confidential, and compassionate care.</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Mental Health Assessment</h3>
+                    <p>Comprehensive depression screening using scientifically validated tools to help you understand your mental health status.</p>
+                    <ul class="service-features">
+                        <li>PHQ-9 validated assessment</li>
+                        <li>Instant results and analysis</li>
+                        <li>Personalized recommendations</li>
+                        <li>Confidential and secure</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitor your mental health journey over time with detailed progress reports and trend analysis.</p>
+                    <ul class="service-features">
+                        <li>Regular assessment reminders</li>
+                        <li>Progress visualization</li>
+                        <li>Trend analysis</li>
+                        <li>Goal setting support</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <i class="fas fa-book-medical"></i>
+                    <h3>Educational Resources</h3>
+                    <p>Access to comprehensive mental health education materials, coping strategies, and self-help resources.</p>
+                    <ul class="service-features">
+                        <li>Mental health articles</li>
+                        <li>Coping strategies</li>
+                        <li>Self-help guides</li>
+                        <li>Expert insights</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3>Support Resources</h3>
+                    <p>Connect with professional mental health resources and support networks in your area.</p>
+                    <ul class="service-features">
+                        <li>Professional referrals</li>
+                        <li>Support group connections</li>
+                        <li>Crisis resources</li>
+                        <li>Community support</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Mobile Accessibility</h3>
+                    <p>Access your mental health assessment and resources anywhere, anytime with our mobile-friendly platform.</p>
+                    <ul class="service-features">
+                        <li>Mobile-optimized interface</li>
+                        <li>Offline capabilities</li>
+                        <li>Push notifications</li>
+                        <li>Cross-platform sync</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Privacy & Security</h3>
+                    <p>Your privacy and data security are our top priorities with enterprise-grade protection measures.</p>
+                    <ul class="service-features">
+                        <li>End-to-end encryption</li>
+                        <li>HIPAA compliance</li>
+                        <li>Anonymous assessments</li>
+                        <li>Data protection</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>How Our Services Help</h2>
+            <p>Our comprehensive suite of mental health services is designed to provide you with the tools, knowledge, and support you need to take control of your mental well-being. Whether you're looking for an initial assessment, ongoing monitoring, or educational resources, we're here to support your mental health journey.</p>
+            <p>Each service is carefully designed to complement the others, creating a holistic approach to mental health care that addresses your unique needs and circumstances.</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Mental Health Assessment. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections and service cards
+        document.querySelectorAll('section, .service-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // Add hover effects
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+
+</html>

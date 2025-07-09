@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results - Mental Health Assessment</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Unified Navigation Styles */
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .score-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .score-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .score-number {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-label {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .score-out-of {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .interpretation-container {
+            background: white;
+            border: 2px solid #e74c3c;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: slideInRight 1s ease-out 0.6s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .interpretation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .interpretation-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: #e74c3c;
+        }
+
+        .interpretation-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .interpretation-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+
+        .severity-level {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .severity-minimal {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .severity-mild {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .severity-moderate {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .severity-severe {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.9s both;
+        }
+
+        .recommendations h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .recommendations h3 i {
+            margin-right: 0.5rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .recommendations li:last-child {
+            border-bottom: none;
+        }
+
+        .recommendations li i {
+            margin-right: 0.5rem;
+            color: #f093fb;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e74c3c;
+            color: white;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.4);
+        }
+
+        .progress-ring {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .progress-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .progress-ring .bg {
+            stroke: rgba(255, 255, 255, 0.3);
+        }
+
+        .progress-ring .progress {
+            stroke: white;
+            stroke-dasharray: 0 628;
+            transition: stroke-dasharray 2s ease;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .result-header h1 {
+                font-size: 2rem;
+            }
+
+            .score-number {
+                font-size: 3rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="home.html" class="nav-logo">
+            <i class="fas fa-brain"></i> Mental Health Assessment
+        </a>
+        <div class="nav-links">
+            <a href="home.html"><i class="fas fa-home"></i> Home</a>
+            <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+            <a href="services.html"><i class="fas fa-cogs"></i> Services</a>
+            <a href="contactus.html"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="result-header">
+            <h1><i class="fas fa-chart-line"></i> Your Assessment Results</h1>
+            <p>Based on your responses, here's your mental health assessment score</p>
+        </div>
+
+        <div id="errorContainer" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>No quiz data found!</strong> Please complete the quiz first.
+        </div>
+
+        <div id="resultContent" style="display: none;">
+            <div class="score-container">
+                <div class="progress-ring">
+                    <svg>
+                        <circle class="bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="progress" cx="100" cy="100" r="90"></circle>
+                    </svg>
+                </div>
+                <div class="score-number" id="scoreNumber">0</div>
+                <div class="score-label" id="scoreLabel">Loading...</div>
+                <div class="score-out-of">out of 40 points</div>
+            </div>
+
+            <div class="interpretation-container">
+                <div class="interpretation-header">
+                    <i class="fas fa-lightbulb interpretation-icon"></i>
+                    <h2 class="interpretation-title">What This Means</h2>
+                </div>
+                <div class="interpretation-text" id="interpretationText">
+                    Loading your personalized interpretation...
+                </div>
+                <div class="severity-level" id="severityLevel">Loading...</div>
+            </div>
+
+            <div class="recommendations">
+                <h3><i class="fas fa-heart"></i> Recommendations</h3>
+                <ul id="recommendationsList">
+                    <li><i class="fas fa-spinner fa-spin"></i> Loading recommendations...</li>
+                </ul>
+        </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="/quiz" class="btn btn-secondary">
+                <i class="fas fa-redo"></i> Retake Quiz
+            </a>
+            <a href="/contactus" class="btn btn-primary">
+                <i class="fas fa-phone"></i> Get Help
+            </a>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if quiz data exists
+        const score = parseInt(localStorage.getItem('quizScore'));
+        
+        if (score === null || isNaN(score)) {
+            // No quiz data found
+            document.getElementById('errorContainer').style.display = 'block';
+            document.getElementById('resultContent').style.display = 'none';
+        } else {
+            // Quiz data found, show results
+            document.getElementById('errorContainer').style.display = 'none';
+            document.getElementById('resultContent').style.display = 'block';
+            
+            // Calculate percentage for progress ring
+            const maxScore = 40;
+            const percentage = (score / maxScore) * 100;
+            const circumference = 2 * Math.PI * 90; // r=90
+            const progress = (percentage / 100) * circumference;
+
+            // Update score display
+            document.getElementById('scoreNumber').textContent = score;
+            
+            // Update progress ring
+            setTimeout(() => {
+                document.querySelector('.progress-ring .progress').style.strokeDasharray = `${progress} ${circumference}`;
+            }, 500);
+
+            // Determine severity level and interpretation
+            let severity, label, interpretation, recommendations;
+
+            if (score <= 4) {
+                severity = 'minimal';
+                label = 'Minimal Depression';
+                interpretation = 'Your responses indicate minimal symptoms of depression. You appear to be experiencing normal mood fluctuations that are part of everyday life. Continue maintaining your current healthy lifestyle and coping strategies.';
+                recommendations = [
+                    'Continue your current healthy lifestyle',
+                    'Maintain regular exercise and sleep patterns',
+                    'Stay connected with friends and family',
+                    'Practice stress management techniques',
+                    'Consider regular mental health check-ins'
+                ];
+            } else if (score <= 9) {
+                severity = 'mild';
+                label = 'Mild Depression';
+                interpretation = 'Your responses suggest mild symptoms of depression. While these symptoms are not severe, they may be affecting your daily life. Consider implementing some self-care strategies and monitoring your mood.';
+                recommendations = [
+                    'Increase physical activity and exercise',
+                    'Improve sleep hygiene and routine',
+                    'Practice mindfulness and meditation',
+                    'Connect with supportive friends and family',
+                    'Consider talking to a counselor or therapist'
+                ];
+            } else if (score <= 14) {
+                severity = 'moderate';
+                label = 'Moderate Depression';
+                interpretation = 'Your responses indicate moderate symptoms of depression that are likely affecting your daily functioning. Professional help is recommended to develop effective coping strategies and treatment options.';
+                recommendations = [
+                    'Seek professional mental health support',
+                    'Consider therapy or counseling sessions',
+                    'Talk to your doctor about treatment options',
+                    'Build a strong support network',
+                    'Practice self-care and stress reduction'
+                ];
+            } else if (score <= 19) {
+                severity = 'moderate';
+                label = 'Moderately Severe Depression';
+                interpretation = 'Your responses suggest moderately severe symptoms of depression that are significantly impacting your life. Professional intervention is strongly recommended to address these symptoms effectively.';
+                recommendations = [
+                    'Seek immediate professional mental health help',
+                    'Consider medication evaluation with a psychiatrist',
+                    'Start therapy or counseling as soon as possible',
+                    'Inform trusted friends and family for support',
+                    'Develop a safety plan if needed'
+                ];
+            } else {
+                severity = 'severe';
+                label = 'Severe Depression';
+                interpretation = 'Your responses indicate severe symptoms of depression that require immediate professional attention. Please reach out to a mental health professional or crisis hotline as soon as possible.';
+                recommendations = [
+                    'Seek immediate professional mental health help',
+                    'Contact a crisis hotline if in distress',
+                    'Consider inpatient treatment if recommended',
+                    'Inform your doctor about your symptoms',
+                    'Build a comprehensive support network'
+                ];
+            }
+
+            // Update display elements
+            document.getElementById('scoreLabel').textContent = label;
+            document.getElementById('interpretationText').textContent = interpretation;
+            document.getElementById('severityLevel').textContent = severity.toUpperCase();
+            document.getElementById('severityLevel').className = `severity-level severity-${severity}`;
+
+            // Update recommendations
+            const recommendationsList = document.getElementById('recommendationsList');
+            recommendationsList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check"></i> ${rec}`;
+                recommendationsList.appendChild(li);
+            });
+        }
+
+        // Clear quiz data when leaving the page (optional)
+        // window.addEventListener('beforeunload', function() {
+        //     localStorage.removeItem('quizScore');
+        // });
+    </script>
+</body>
+</html>
+
