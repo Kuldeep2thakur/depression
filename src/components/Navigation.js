@@ -169,11 +169,11 @@ const Navigation = () => {
   };
 
   const navItems = [
-    { path: '/', label: 'Home' },
-    { path: '/quiz', label: 'Quiz' },
-    { path: '/about', label: 'About' },
-    { path: '/services', label: 'Services' },
-    { path: '/contact', label: 'Contact' }
+    { path: '/', label: 'Home', icon: 'fas fa-home' },
+    { path: '/quiz', label: 'Quiz', icon: 'fas fa-clipboard-list' },
+    { path: '/about', label: 'About', icon: 'fas fa-info-circle' },
+    { path: '/services', label: 'Services', icon: 'fas fa-cogs' },
+    { path: '/contact', label: 'Contact', icon: 'fas fa-envelope' }
   ];
 
   const isActive = (path) => {
@@ -210,6 +210,7 @@ const Navigation = () => {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
+            <i className={item.icon} style={{ marginRight: '8px' }}></i>
             {item.label}
           </NavLink>
         ))}
@@ -224,15 +225,18 @@ const Navigation = () => {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
+              <i className="fas fa-sign-out-alt" style={{ marginRight: '6px' }}></i>
               Logout
             </LogoutButton>
           </>
         ) : (
           <>
             <AuthButton to="/login" whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
+              <i className="fas fa-sign-in-alt" style={{ marginRight: '6px' }}></i>
               Login
             </AuthButton>
             <AuthButton to="/register" primary whileHover={{ y: -2 }} whileTap={{ scale: 0.95 }}>
+              <i className="fas fa-user-plus" style={{ marginRight: '6px' }}></i>
               Register
             </AuthButton>
           </>
@@ -260,17 +264,25 @@ const Navigation = () => {
                 to={item.path}
                 className={isActive(item.path) ? 'active' : ''}
               >
+                <i className={item.icon} style={{ marginRight: '10px' }}></i>
                 {item.label}
               </MobileNavLink>
             ))}
             {user ? (
               <MobileNavLink as="button" onClick={handleLogout}>
+                <i className="fas fa-sign-out-alt" style={{ marginRight: '10px' }}></i>
                 Logout
               </MobileNavLink>
             ) : (
               <>
-                <MobileNavLink to="/login">Login</MobileNavLink>
-                <MobileNavLink to="/register">Register</MobileNavLink>
+                <MobileNavLink to="/login">
+                  <i className="fas fa-sign-in-alt" style={{ marginRight: '10px' }}></i>
+                  Login
+                </MobileNavLink>
+                <MobileNavLink to="/register">
+                  <i className="fas fa-user-plus" style={{ marginRight: '10px' }}></i>
+                  Register
+                </MobileNavLink>
               </>
             )}
           </MobileMenu>

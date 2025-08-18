@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 const ContactContainer = styled.div`
@@ -305,13 +305,13 @@ const contactInfo = [
     id: 1,
     icon: 'fas fa-envelope',
     title: 'Email',
-    content: '88378@depressionchecker.com'
+    content: 'kuldeepsengar5678@gmail.com'
   },
   {
     id: 2,
     icon: 'fas fa-phone',
     title: 'Phone',
-    content: '+1234567890'
+    content: '7451042310'
   },
   {
     id: 3,
@@ -323,7 +323,7 @@ const contactInfo = [
     id: 4,
     icon: 'fas fa-map-marker-alt',
     title: 'Location',
-    content: 'Mental Health Assessment Center\n123 Wellness Street\nHealth City, HC 12345'
+    content: 'B72 Panchshell Colony\nLalkaun, Ghaziabad\nUttar Pradesh, India'
   }
 ];
 
@@ -363,6 +363,26 @@ const Contact = () => {
     triggerOnce: true
   });
 
+  // Auto-populate email field with logged-in user's email
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user && user.email) {
+        setFormData(prev => ({
+          ...prev,
+          email: user.email
+        }));
+      } else {
+        // Clear email if user is not logged in
+        setFormData(prev => ({
+          ...prev,
+          email: ''
+        }));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -373,10 +393,25 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      setStatus("Please log in to send a message.");
+      return;
+    }
+
+    // Check if the entered email matches the logged-in user's email
+    if (formData.email !== currentUser.email) {
+      setStatus("The email address must match your registered email address.");
+      return;
+    }
+
     setStatus("Sending...");
     try {
       await addDoc(collection(db, "contacts"), {
         ...formData,
+        userId: currentUser.uid,
         created: Timestamp.now()
       });
       setStatus("Thank you for your message! We will get back to you soon.");
@@ -459,6 +494,18 @@ const Contact = () => {
             animate="visible"
             transition={{ delay: 0.2 }}
           >
+            {!auth.currentUser && (
+              <div style={{ 
+                backgroundColor: '#fff3cd', 
+                border: '1px solid #ffeaa7', 
+                borderRadius: '5px', 
+                padding: '15px', 
+                marginBottom: '20px',
+                color: '#856404'
+              }}>
+                <i className="fas fa-info-circle"></i> Please log in to send a message. Your email address will be automatically filled with your registered email.
+              </div>
+            )}
             <FormGroup>
               <Label htmlFor="name">Full Name *</Label>
               <Input
@@ -472,14 +519,21 @@ const Contact = () => {
             </FormGroup>
             
             <FormGroup>
-              <Label htmlFor="email">Email Address *</Label>
+              <Label htmlFor="email">Email Address * (Your registered email)</Label>
               <Input
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
+                value={formData.email || (auth.currentUser ? 'Loading...' : 'Please log in')}
                 onChange={handleInputChange}
                 required
+                readOnly
+                style={{ 
+                  backgroundColor: auth.currentUser ? '#f5f5f5' : '#ffe6e6', 
+                  cursor: 'not-allowed',
+                  color: auth.currentUser ? '#333' : '#999'
+                }}
+                placeholder={auth.currentUser ? 'Loading your email...' : 'Please log in to see your email'}
               />
             </FormGroup>
             

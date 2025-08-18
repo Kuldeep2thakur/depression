@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, collection, addDoc, getDoc, updateDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 import OTPVerification from '../components/OTPVerification';
@@ -84,6 +84,58 @@ const SuccessMessage = styled.div`
   color: #00aa00;
   margin-top: 10px;
   text-align: center;
+`;
+
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #666;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+  }
+  
+  span {
+    padding: 0 15px;
+    font-size: 14px;
+  }
+`;
+
+const GoogleButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background: white;
+  color: #333;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  
+  &:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+  }
+  
+  &:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;
+
+const GoogleIcon = styled.i`
+  color: #4285f4;
+  font-size: 18px;
 `;
 
 const Register = () => {
@@ -263,6 +315,56 @@ const Register = () => {
     setLoading(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Store user data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName || 'Google User',
+        email: user.email,
+        photoURL: user.photoURL,
+        provider: 'google',
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      });
+
+      // Add registration history
+      await addDoc(collection(db, "registrationHistory"), {
+        userId: user.uid,
+        email: user.email,
+        timestamp: new Date().toISOString(),
+        success: true,
+        provider: 'google'
+      });
+
+      setSuccess('Registration successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      setError('Failed to sign in with Google. Please try again.');
+      
+      // Log failed registration attempt
+      await addDoc(collection(db, "registrationHistory"), {
+        email: 'google_signin_attempt',
+        timestamp: new Date().toISOString(),
+        success: false,
+        error: err.message,
+        provider: 'google'
+      });
+    }
+
+    setLoading(false);
+  };
+
   return (
     <RegisterContainer>
       <RegisterForm onSubmit={handleSubmit}>
@@ -321,6 +423,19 @@ const Register = () => {
             <Button type="submit" disabled={loading}>
               {loading ? 'Sending Verification Code...' : 'Register'}
             </Button>
+
+            <Divider>
+              <span>or</span>
+            </Divider>
+
+            <GoogleButton 
+              type="button" 
+              onClick={handleGoogleSignIn} 
+              disabled={loading}
+            >
+              <GoogleIcon className="fab fa-google"></GoogleIcon>
+              {loading ? 'Signing up...' : 'Continue with Google'}
+            </GoogleButton>
           </>
         ) : (
           <OTPVerification

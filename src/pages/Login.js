@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, updateDoc, collection, addDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { doc, updateDoc, collection, addDoc, setDoc } from 'firebase/firestore';
 import styled from 'styled-components';
 
 const LoginContainer = styled.div`
@@ -91,6 +91,58 @@ const RegisterLink = styled.div`
   }
 `;
 
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #666;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+  }
+  
+  span {
+    padding: 0 15px;
+    font-size: 14px;
+  }
+`;
+
+const GoogleButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background: white;
+  color: #333;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  
+  &:hover {
+    background: #f8f9fa;
+    border-color: #adb5bd;
+  }
+  
+  &:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;
+
+const GoogleIcon = styled.i`
+  color: #4285f4;
+  font-size: 18px;
+`;
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -150,6 +202,55 @@ const Login = () => {
     setLoading(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Check if user exists in our database
+      const userDoc = doc(db, "users", user.uid);
+      
+      // Add or update user data in Firestore
+      await setDoc(userDoc, {
+        name: user.displayName || 'Google User',
+        email: user.email,
+        photoURL: user.photoURL,
+        provider: 'google',
+        lastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      }, { merge: true });
+
+      // Add login history
+      await addDoc(collection(db, "loginHistory"), {
+        userId: user.uid,
+        email: user.email,
+        timestamp: new Date().toISOString(),
+        success: true,
+        provider: 'google'
+      });
+
+      navigate('/'); // Redirect to home page after successful login
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      setError('Failed to sign in with Google. Please try again.');
+      
+      // Log failed login attempt
+      await addDoc(collection(db, "loginHistory"), {
+        email: 'google_signin_attempt',
+        timestamp: new Date().toISOString(),
+        success: false,
+        error: err.message,
+        provider: 'google'
+      });
+    }
+
+    setLoading(false);
+  };
+
   return (
     <LoginContainer>
       <LoginForm onSubmit={handleSubmit}>
@@ -182,6 +283,19 @@ const Login = () => {
         <Button type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </Button>
+
+        <Divider>
+          <span>or</span>
+        </Divider>
+
+        <GoogleButton 
+          type="button" 
+          onClick={handleGoogleSignIn} 
+          disabled={loading}
+        >
+          <GoogleIcon className="fab fa-google"></GoogleIcon>
+          {loading ? 'Signing in...' : 'Continue with Google'}
+        </GoogleButton>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
