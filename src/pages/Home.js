@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
@@ -18,10 +18,21 @@ const HeaderSection = styled.header`
   text-align: center;
   color: white;
   overflow: hidden;
-  background: url('/download.jpeg') center center/cover no-repeat;
 `;
 
-
+const VideoBackground = styled.video`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+`;
 
 const Overlay = styled.div`
   position: absolute;
@@ -203,12 +214,26 @@ const features = [
   }
 ];
 
-
 const Home = () => {
+  const videoRef = useRef(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.addEventListener('loadeddata', () => setVideoLoaded(true));
+      video.addEventListener('error', (e) => console.error('Video error:', e));
+      
+      return () => {
+        video.removeEventListener('loadeddata', () => setVideoLoaded(true));
+        video.removeEventListener('error', (e) => console.error('Video error:', e));
+      };
+    }
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -235,6 +260,17 @@ const Home = () => {
   return (
     <HomeContainer>
       <HeaderSection>
+        <VideoBackground
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src="/naturevideo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </VideoBackground>
         <Overlay />
         <HeaderContent>
           <Title
